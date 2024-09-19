@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS "members";
+DROP TABLE IF EXISTS "roles";
+DROP TABLE IF EXISTS "units";
+DROP TABLE IF EXISTS "classes";
