@@ -4,15 +4,24 @@ cloud:
   project: ""
   hostname: ""
 servers: []
-sql: 
+sql:
   - engine: "postgresql"
-    queries: "./pkg/sqlc/query/"
-    schema: "./pkg/sqlc/migration/"
+    queries: "./pkg/sqlc/class/query"
+    schema: "./pkg/sqlc/migration"
     gen:
       go:
-        package: "sqlcDb"
-        out: "./pkg/sqlc/db"
-        # sql_package: "database/sql"
+        package: "classDb"
+        out: "./pkg/sqlc/class/data"
+        emit_json_tags: true
+        emit_empty_slices: true
+        emit_interface: true
+  - engine: "postgresql"
+    queries: "./pkg/sqlc/unit/query"
+    schema: "./pkg/sqlc/migration"
+    gen:
+      go:
+        package: "unitDb"
+        out: "./pkg/sqlc/unit/data"
         emit_json_tags: true
         emit_empty_slices: true
         emit_interface: true
