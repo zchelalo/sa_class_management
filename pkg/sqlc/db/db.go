@@ -5,42 +5,42 @@ import (
 	"database/sql"
 	"fmt"
 
-	classDb "github.com/zchelalo/sa_class_management/pkg/sqlc/class/data"
-	unitDb "github.com/zchelalo/sa_class_management/pkg/sqlc/unit/data"
+	classData "github.com/zchelalo/sa_class_management/pkg/sqlc/data/class/db"
+	unitData "github.com/zchelalo/sa_class_management/pkg/sqlc/data/unit/db"
 )
 
 type Querier interface {
-	classDb.Querier
-	unitDb.Querier
+	unitData.Querier
+	classData.Querier
 }
 
 type SQLStore struct {
-	db           *sql.DB
-	classQueries *classDb.Queries
-	unitQueries  *unitDb.Queries
+	DB           *sql.DB
+	UnitQueries  *unitData.Queries
+	ClassQueries *classData.Queries
 }
 
 func NewStore(db *sql.DB) *SQLStore {
 	return &SQLStore{
-		db:           db,
-		classQueries: classDb.New(db),
-		unitQueries:  unitDb.New(db),
+		DB:           db,
+		UnitQueries:  unitData.New(db),
+		ClassQueries: classData.New(db),
 	}
 }
 
-func (store *SQLStore) execTx(ctx context.Context, fn func(*SQLStore) error) error {
-	tx, err := store.db.BeginTx(ctx, nil)
+func (store *SQLStore) ExecTx(ctx context.Context, fn func(*SQLStore) error) error {
+	tx, err := store.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
-	classQueries := classDb.New(tx)
-	unitQueries := unitDb.New(tx)
+	unitQueries := unitData.New(tx)
+	classQueries := classData.New(tx)
 
 	transactionStore := &SQLStore{
-		db:           store.db,
-		classQueries: classQueries,
-		unitQueries:  unitQueries,
+		DB:           store.DB,
+		UnitQueries:  unitQueries,
+		ClassQueries: classQueries,
 	}
 
 	err = fn(transactionStore)

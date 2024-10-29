@@ -6,22 +6,22 @@ cloud:
 servers: []
 sql:
   - engine: "postgresql"
-    queries: "./pkg/sqlc/class/query"
+    queries: "./pkg/sqlc/data/class/query"
     schema: "./pkg/sqlc/migration"
     gen:
       go:
-        package: "classDb"
-        out: "./pkg/sqlc/class/data"
+        package: "classData"
+        out: "./pkg/sqlc/data/class/db"
         emit_json_tags: true
         emit_empty_slices: true
         emit_interface: true
   - engine: "postgresql"
-    queries: "./pkg/sqlc/unit/query"
+    queries: "./pkg/sqlc/data/unit/query"
     schema: "./pkg/sqlc/migration"
     gen:
       go:
-        package: "unitDb"
-        out: "./pkg/sqlc/unit/data"
+        package: "unitData"
+        out: "./pkg/sqlc/data/unit/db"
         emit_json_tags: true
         emit_empty_slices: true
         emit_interface: true

@@ -3,7 +3,7 @@
 //   sqlc v1.27.0
 // source: unit.sql
 
-package unitDb
+package unitData
 
 import (
 	"context"
