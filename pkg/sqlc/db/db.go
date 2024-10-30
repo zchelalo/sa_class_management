@@ -20,7 +20,7 @@ type SQLStore struct {
 	ClassQueries *classData.Queries
 }
 
-func NewStore(db *sql.DB) *SQLStore {
+func New(db *sql.DB) *SQLStore {
 	return &SQLStore{
 		DB:           db,
 		UnitQueries:  unitData.New(db),
