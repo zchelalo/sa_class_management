@@ -3,6 +3,7 @@ CREATE TABLE "classes" (
   "name" varchar(150) NOT NULL,
   "subject" varchar(150),
   "grade" varchar(100),
+  "code" char(8) NOT NULL,
   "deleted_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz NOT NULL DEFAULT (now())
