@@ -33,4 +33,12 @@ protouser:
 	mv ./pkg/proto/sa_proto/user/* ./pkg/proto/user/ && \
 	rm -rf ./pkg/proto/sa_proto
 
-.PHONY: migrateup migrateup1 migratedown migratedown1 compose composebuild sqlc protousers
+protoclass:
+	protoc --experimental_allow_proto3_optional \
+	  --go_out=./pkg/proto --go_opt=paths=source_relative \
+	  --go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
+	  ./sa_proto/class/service.proto && \
+	mv ./pkg/proto/sa_proto/class/* ./pkg/proto/class/ && \
+	rm -rf ./pkg/proto/sa_proto
+
+.PHONY: migrateup migrateup1 migratedown migratedown1 compose composebuild sqlc protouser protoclass
