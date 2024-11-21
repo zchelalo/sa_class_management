@@ -18,5 +18,11 @@ package classPostgres
 // }
 
 // func (r *PostgresRepository) Create(ctx context.Context, userID string, newClass *classDomain.ClassEntity) (*classDomain.ClassEntity, error) {
+// 	var class *classDomain.ClassEntity
 
+// 	err := r.store.ExecTx(ctx, func(store *db.SQLStore) error {
+
+// 	})
+
+// 	return class, err
 // }
