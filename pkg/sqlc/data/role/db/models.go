@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.27.0
 
-package classData
+package roleData
 
 import (
 	"database/sql"

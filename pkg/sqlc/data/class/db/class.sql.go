@@ -8,6 +8,8 @@ package classData
 import (
 	"context"
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 const getClass = `-- name: GetClass :one
@@ -23,13 +25,13 @@ LIMIT 1
 `
 
 type GetClassRow struct {
-	ID      string         `json:"id"`
+	ID      uuid.UUID      `json:"id"`
 	Name    string         `json:"name"`
 	Subject sql.NullString `json:"subject"`
 	Grade   sql.NullString `json:"grade"`
 }
 
-func (q *Queries) GetClass(ctx context.Context, id string) (GetClassRow, error) {
+func (q *Queries) GetClass(ctx context.Context, id uuid.UUID) (GetClassRow, error) {
 	row := q.db.QueryRowContext(ctx, getClass, id)
 	var i GetClassRow
 	err := row.Scan(

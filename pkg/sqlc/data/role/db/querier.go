@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.27.0
 
-package unitData
+package roleData
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 )
 
 type Querier interface {
-	GetUnit(ctx context.Context, id uuid.UUID) (GetUnitRow, error)
+	GetRole(ctx context.Context, id uuid.UUID) (GetRoleRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

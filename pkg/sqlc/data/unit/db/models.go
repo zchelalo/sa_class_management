@@ -7,30 +7,33 @@ package unitData
 import (
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Class struct {
-	ID        string         `json:"id"`
+	ID        uuid.UUID      `json:"id"`
 	Name      string         `json:"name"`
 	Subject   sql.NullString `json:"subject"`
 	Grade     sql.NullString `json:"grade"`
+	Code      string         `json:"code"`
 	DeletedAt sql.NullTime   `json:"deleted_at"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 type Member struct {
-	ID        string       `json:"id"`
-	RoleID    string       `json:"role_id"`
-	UserID    string       `json:"user_id"`
-	ClassID   string       `json:"class_id"`
+	ID        uuid.UUID    `json:"id"`
+	RoleID    uuid.UUID    `json:"role_id"`
+	UserID    uuid.UUID    `json:"user_id"`
+	ClassID   uuid.UUID    `json:"class_id"`
 	DeletedAt sql.NullTime `json:"deleted_at"`
 	CreatedAt time.Time    `json:"created_at"`
 	UpdatedAt time.Time    `json:"updated_at"`
 }
 
 type Role struct {
-	ID        string       `json:"id"`
+	ID        uuid.UUID    `json:"id"`
 	Key       string       `json:"key"`
 	DeletedAt sql.NullTime `json:"deleted_at"`
 	CreatedAt time.Time    `json:"created_at"`
@@ -38,9 +41,9 @@ type Role struct {
 }
 
 type Unit struct {
-	ID        string       `json:"id"`
+	ID        uuid.UUID    `json:"id"`
 	Name      string       `json:"name"`
-	ClassID   string       `json:"class_id"`
+	ClassID   uuid.UUID    `json:"class_id"`
 	DeletedAt sql.NullTime `json:"deleted_at"`
 	CreatedAt time.Time    `json:"created_at"`
 	UpdatedAt time.Time    `json:"updated_at"`

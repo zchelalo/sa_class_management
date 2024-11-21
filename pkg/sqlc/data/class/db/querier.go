@@ -6,10 +6,12 @@ package classData
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
-	GetClass(ctx context.Context, id string) (GetClassRow, error)
+	GetClass(ctx context.Context, id uuid.UUID) (GetClassRow, error)
 }
 
 var _ Querier = (*Queries)(nil)
