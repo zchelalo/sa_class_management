@@ -7,8 +7,6 @@ package memberData
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 const createMember = `-- name: CreateMember :one
@@ -26,10 +24,10 @@ INSERT INTO members (
 `
 
 type CreateMemberParams struct {
-	ID      uuid.UUID `json:"id"`
-	RoleID  uuid.UUID `json:"role_id"`
-	UserID  uuid.UUID `json:"user_id"`
-	ClassID uuid.UUID `json:"class_id"`
+	ID      string `json:"id"`
+	RoleID  string `json:"role_id"`
+	UserID  string `json:"user_id"`
+	ClassID string `json:"class_id"`
 }
 
 func (q *Queries) CreateMember(ctx context.Context, arg CreateMemberParams) (Member, error) {
@@ -61,8 +59,8 @@ AND deleted_at IS NULL
 `
 
 type DeleteMemberParams struct {
-	UserID  uuid.UUID `json:"user_id"`
-	ClassID uuid.UUID `json:"class_id"`
+	UserID  string `json:"user_id"`
+	ClassID string `json:"class_id"`
 }
 
 func (q *Queries) DeleteMember(ctx context.Context, arg DeleteMemberParams) error {
@@ -84,15 +82,15 @@ LIMIT 1
 `
 
 type GetMemberParams struct {
-	UserID  uuid.UUID `json:"user_id"`
-	ClassID uuid.UUID `json:"class_id"`
+	UserID  string `json:"user_id"`
+	ClassID string `json:"class_id"`
 }
 
 type GetMemberRow struct {
-	ID      uuid.UUID `json:"id"`
-	RoleID  uuid.UUID `json:"role_id"`
-	UserID  uuid.UUID `json:"user_id"`
-	ClassID uuid.UUID `json:"class_id"`
+	ID      string `json:"id"`
+	RoleID  string `json:"role_id"`
+	UserID  string `json:"user_id"`
+	ClassID string `json:"class_id"`
 }
 
 func (q *Queries) GetMember(ctx context.Context, arg GetMemberParams) (GetMemberRow, error) {

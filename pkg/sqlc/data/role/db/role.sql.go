@@ -7,11 +7,9 @@ package roleData
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
-const getRole = `-- name: GetRole :one
+const getRoleByID = `-- name: GetRoleByID :one
 SELECT
   id,
   key
@@ -21,14 +19,36 @@ AND deleted_at IS NULL
 LIMIT 1
 `
 
-type GetRoleRow struct {
-	ID  uuid.UUID `json:"id"`
-	Key string    `json:"key"`
+type GetRoleByIDRow struct {
+	ID  string `json:"id"`
+	Key string `json:"key"`
 }
 
-func (q *Queries) GetRole(ctx context.Context, id uuid.UUID) (GetRoleRow, error) {
-	row := q.db.QueryRowContext(ctx, getRole, id)
-	var i GetRoleRow
+func (q *Queries) GetRoleByID(ctx context.Context, id string) (GetRoleByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, getRoleByID, id)
+	var i GetRoleByIDRow
+	err := row.Scan(&i.ID, &i.Key)
+	return i, err
+}
+
+const getRoleByKey = `-- name: GetRoleByKey :one
+SELECT
+  id,
+  key
+FROM roles
+WHERE key = $1
+AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetRoleByKeyRow struct {
+	ID  string `json:"id"`
+	Key string `json:"key"`
+}
+
+func (q *Queries) GetRoleByKey(ctx context.Context, key string) (GetRoleByKeyRow, error) {
+	row := q.db.QueryRowContext(ctx, getRoleByKey, key)
+	var i GetRoleByKeyRow
 	err := row.Scan(&i.ID, &i.Key)
 	return i, err
 }

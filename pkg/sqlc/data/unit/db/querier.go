@@ -6,12 +6,10 @@ package unitData
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 type Querier interface {
-	GetUnit(ctx context.Context, id uuid.UUID) (GetUnitRow, error)
+	GetUnit(ctx context.Context, id string) (GetUnitRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

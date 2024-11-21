@@ -6,12 +6,11 @@ package roleData
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 type Querier interface {
-	GetRole(ctx context.Context, id uuid.UUID) (GetRoleRow, error)
+	GetRoleByID(ctx context.Context, id string) (GetRoleByIDRow, error)
+	GetRoleByKey(ctx context.Context, key string) (GetRoleByKeyRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

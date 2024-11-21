@@ -1,28 +1,103 @@
 package classPostgres
 
-// import (
-// 	"context"
+import (
+	"context"
+	"database/sql"
 
-// 	classDomain "github.com/zchelalo/sa_class_management/internal/modules/class/domain"
-// 	"github.com/zchelalo/sa_class_management/pkg/sqlc/db"
-// )
+	classDomain "github.com/zchelalo/sa_class_management/internal/modules/class/domain"
+	classError "github.com/zchelalo/sa_class_management/internal/modules/class/error"
+	memberDomain "github.com/zchelalo/sa_class_management/internal/modules/member/domain"
+	classData "github.com/zchelalo/sa_class_management/pkg/sqlc/data/class/db"
+	memberData "github.com/zchelalo/sa_class_management/pkg/sqlc/data/member/db"
+	"github.com/zchelalo/sa_class_management/pkg/sqlc/db"
+)
 
-// type PostgresRepository struct {
-// 	store *db.SQLStore
-// }
+type PostgresRepository struct {
+	store *db.SQLStore
+}
 
-// func New(store *db.SQLStore) classDomain.ClassRepository {
-// 	return &PostgresRepository{
-// 		store: store,
-// 	}
-// }
+func New(store *db.SQLStore) classDomain.ClassRepository {
+	return &PostgresRepository{
+		store: store,
+	}
+}
 
-// func (r *PostgresRepository) Create(ctx context.Context, userID string, newClass *classDomain.ClassEntity) (*classDomain.ClassEntity, error) {
-// 	var class *classDomain.ClassEntity
+func (r *PostgresRepository) Create(ctx context.Context, newMember *memberDomain.MemberEntity, newClass *classDomain.ClassEntity) (*classDomain.ClassEntity, error) {
+	var class *classDomain.ClassEntity
 
-// 	err := r.store.ExecTx(ctx, func(store *db.SQLStore) error {
+	err := r.store.ExecTx(ctx, func(store *db.SQLStore) error {
+		classCreated, err := store.ClassQueries.CreateClass(ctx, classData.CreateClassParams{
+			ID:      newClass.ID,
+			Name:    newClass.Name,
+			Subject: sql.NullString{String: newClass.Subject, Valid: true},
+			Grade:   sql.NullString{String: newClass.Grade, Valid: true},
+			Code:    newClass.Code,
+		})
+		if err != nil {
+			return err
+		}
 
-// 	})
+		_, err = store.MemberQueries.CreateMember(ctx, memberData.CreateMemberParams{
+			ID:      newMember.ID,
+			RoleID:  newMember.RoleID,
+			UserID:  newMember.UserID,
+			ClassID: classCreated.ID,
+		})
+		if err != nil {
+			return err
+		}
 
-// 	return class, err
-// }
+		class = &classDomain.ClassEntity{
+			ID:      classCreated.ID,
+			Name:    classCreated.Name,
+			Subject: classCreated.Subject.String,
+			Grade:   classCreated.Grade.String,
+			Code:    classCreated.Code,
+		}
+
+		return nil
+	})
+
+	return class, err
+}
+
+func (r *PostgresRepository) Join(ctx context.Context, newMember *memberDomain.MemberEntity, classID string) error {
+	_, err := r.store.MemberQueries.CreateMember(ctx, memberData.CreateMemberParams{
+		ID:      newMember.ID,
+		RoleID:  newMember.RoleID,
+		UserID:  newMember.UserID,
+		ClassID: classID,
+	})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return classError.ErrClassNotFound
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (r *PostgresRepository) List(ctx context.Context, userID string, offset, limit int32) ([]*classDomain.ClassEntity, error) {
+	classes, err := r.store.ClassQueries.ListClasses(ctx, classData.ListClassesParams{
+		UserID: userID,
+		Offset: offset,
+		Limit:  limit,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var classEntities []*classDomain.ClassEntity
+	for _, class := range classes {
+		classEntities = append(classEntities, &classDomain.ClassEntity{
+			ID:      class.ID,
+			Name:    class.Name,
+			Subject: class.Subject.String,
+			Grade:   class.Grade.String,
+		})
+	}
+
+	return classEntities, nil
+}

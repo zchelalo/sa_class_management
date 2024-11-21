@@ -1,5 +1,5 @@
 CREATE TABLE "classes" (
-  "id" uuid PRIMARY KEY,
+  "id" char(36) PRIMARY KEY,
   "name" varchar(150) NOT NULL,
   "subject" varchar(150),
   "grade" varchar(100),
@@ -10,9 +10,9 @@ CREATE TABLE "classes" (
 );
 
 CREATE TABLE "units" (
-  "id" uuid PRIMARY KEY,
+  "id" char(36) PRIMARY KEY,
   "name" varchar(150) NOT NULL,
-  "class_id" uuid NOT NULL,
+  "class_id" char(36) NOT NULL,
   "deleted_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz NOT NULL DEFAULT (now()),
@@ -20,7 +20,7 @@ CREATE TABLE "units" (
 );
 
 CREATE TABLE "roles" (
-  "id" uuid PRIMARY KEY,
+  "id" char(36) PRIMARY KEY,
   "key" varchar(50) NOT NULL,
   "deleted_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
@@ -28,10 +28,10 @@ CREATE TABLE "roles" (
 );
 
 CREATE TABLE "members" (
-  "id" uuid PRIMARY KEY,
-  "role_id" uuid NOT NULL,
-  "user_id" uuid NOT NULL,
-  "class_id" uuid NOT NULL,
+  "id" char(36) PRIMARY KEY,
+  "role_id" char(36) NOT NULL,
+  "user_id" char(36) NOT NULL,
+  "class_id" char(36) NOT NULL,
   "deleted_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz NOT NULL DEFAULT (now()),

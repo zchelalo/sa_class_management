@@ -8,9 +8,53 @@ package classData
 import (
 	"context"
 	"database/sql"
-
-	"github.com/google/uuid"
 )
+
+const createClass = `-- name: CreateClass :one
+INSERT INTO classes (
+  id,
+  name,
+  subject,
+  grade,
+  code
+) VALUES (
+  $1,
+  $2,
+  $3,
+  $4,
+  $5
+) RETURNING id, name, subject, grade, code, deleted_at, created_at, updated_at
+`
+
+type CreateClassParams struct {
+	ID      string         `json:"id"`
+	Name    string         `json:"name"`
+	Subject sql.NullString `json:"subject"`
+	Grade   sql.NullString `json:"grade"`
+	Code    string         `json:"code"`
+}
+
+func (q *Queries) CreateClass(ctx context.Context, arg CreateClassParams) (Class, error) {
+	row := q.db.QueryRowContext(ctx, createClass,
+		arg.ID,
+		arg.Name,
+		arg.Subject,
+		arg.Grade,
+		arg.Code,
+	)
+	var i Class
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Subject,
+		&i.Grade,
+		&i.Code,
+		&i.DeletedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
 
 const getClass = `-- name: GetClass :one
 SELECT
@@ -25,13 +69,13 @@ LIMIT 1
 `
 
 type GetClassRow struct {
-	ID      uuid.UUID      `json:"id"`
+	ID      string         `json:"id"`
 	Name    string         `json:"name"`
 	Subject sql.NullString `json:"subject"`
 	Grade   sql.NullString `json:"grade"`
 }
 
-func (q *Queries) GetClass(ctx context.Context, id uuid.UUID) (GetClassRow, error) {
+func (q *Queries) GetClass(ctx context.Context, id string) (GetClassRow, error) {
 	row := q.db.QueryRowContext(ctx, getClass, id)
 	var i GetClassRow
 	err := row.Scan(
@@ -41,4 +85,61 @@ func (q *Queries) GetClass(ctx context.Context, id uuid.UUID) (GetClassRow, erro
 		&i.Grade,
 	)
 	return i, err
+}
+
+const listClasses = `-- name: ListClasses :many
+SELECT
+  classes.id,
+  classes.name,
+  classes.subject,
+  classes.grade
+FROM classes
+INNER JOIN members ON classes.id = members.class_id
+WHERE members.user_id = $1
+AND classes.deleted_at IS NULL
+AND members.deleted_at IS NULL
+ORDER BY classes.created_at DESC
+OFFSET $2
+LIMIT $3
+`
+
+type ListClassesParams struct {
+	UserID string `json:"user_id"`
+	Offset int32  `json:"offset"`
+	Limit  int32  `json:"limit"`
+}
+
+type ListClassesRow struct {
+	ID      string         `json:"id"`
+	Name    string         `json:"name"`
+	Subject sql.NullString `json:"subject"`
+	Grade   sql.NullString `json:"grade"`
+}
+
+func (q *Queries) ListClasses(ctx context.Context, arg ListClassesParams) ([]ListClassesRow, error) {
+	rows, err := q.db.QueryContext(ctx, listClasses, arg.UserID, arg.Offset, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListClassesRow{}
+	for rows.Next() {
+		var i ListClassesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Subject,
+			&i.Grade,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

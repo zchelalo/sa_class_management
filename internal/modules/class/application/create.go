@@ -4,7 +4,9 @@ import (
 	"context"
 
 	classDomain "github.com/zchelalo/sa_class_management/internal/modules/class/domain"
+	memberDomain "github.com/zchelalo/sa_class_management/internal/modules/member/domain"
 	userDomain "github.com/zchelalo/sa_class_management/internal/modules/user/domain"
+	"github.com/zchelalo/sa_class_management/pkg/constants"
 )
 
 func (useCases *ClassUseCases) Create(ctx context.Context, userID, name, subject, grade string) (*classDomain.ClassEntity, error) {
@@ -12,7 +14,7 @@ func (useCases *ClassUseCases) Create(ctx context.Context, userID, name, subject
 		return nil, err
 	}
 
-	_, err := useCases.UserRepository.Get(ctx, userID)
+	_, err := useCases.userRepository.Get(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +24,17 @@ func (useCases *ClassUseCases) Create(ctx context.Context, userID, name, subject
 		return nil, err
 	}
 
-	classCreated, err := useCases.classRepository.Create(ctx, userID, newClass)
+	teacherRole, err := useCases.memberRepository.GetRoleIDByKey(ctx, string(constants.RoleTeacher))
+	if err != nil {
+		return nil, err
+	}
+
+	newMember, err := memberDomain.New(userID, teacherRole)
+	if err != nil {
+		return nil, err
+	}
+
+	classCreated, err := useCases.classRepository.Create(ctx, newMember, newClass)
 	if err != nil {
 		return nil, err
 	}

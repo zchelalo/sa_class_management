@@ -2,17 +2,20 @@ package classApplication
 
 import (
 	classDomain "github.com/zchelalo/sa_class_management/internal/modules/class/domain"
+	memberDomain "github.com/zchelalo/sa_class_management/internal/modules/member/domain"
 	userDomain "github.com/zchelalo/sa_class_management/internal/modules/user/domain"
 )
 
 type ClassUseCases struct {
-	classRepository classDomain.ClassRepository
-	UserRepository  userDomain.UserRepository
+	classRepository  classDomain.ClassRepository
+	userRepository   userDomain.UserRepository
+	memberRepository memberDomain.MemberRepository
 }
 
-func New(classRepository classDomain.ClassRepository, userRepository userDomain.UserRepository) *ClassUseCases {
+func New(classRepository classDomain.ClassRepository, userRepository userDomain.UserRepository, memberRepository memberDomain.MemberRepository) *ClassUseCases {
 	return &ClassUseCases{
-		classRepository: classRepository,
-		UserRepository:  userRepository,
+		classRepository:  classRepository,
+		userRepository:   userRepository,
+		memberRepository: memberRepository,
 	}
 }

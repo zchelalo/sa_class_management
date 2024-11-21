@@ -7,8 +7,6 @@ package unitData
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 const getUnit = `-- name: GetUnit :one
@@ -22,11 +20,11 @@ LIMIT 1
 `
 
 type GetUnitRow struct {
-	ID   uuid.UUID `json:"id"`
-	Name string    `json:"name"`
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
-func (q *Queries) GetUnit(ctx context.Context, id uuid.UUID) (GetUnitRow, error) {
+func (q *Queries) GetUnit(ctx context.Context, id string) (GetUnitRow, error) {
 	row := q.db.QueryRowContext(ctx, getUnit, id)
 	var i GetUnitRow
 	err := row.Scan(&i.ID, &i.Name)
