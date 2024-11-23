@@ -9,17 +9,24 @@ import (
 	"github.com/zchelalo/sa_class_management/pkg/constants"
 )
 
-func (useCases *ClassUseCases) Create(ctx context.Context, userID, name, subject, grade string) (*classDomain.ClassEntity, error) {
-	if err := userDomain.IsIdValid(userID); err != nil {
+type CreateRequest struct {
+	UserID  string
+	Name    string
+	Subject string
+	Grade   string
+}
+
+func (useCases *ClassUseCases) Create(ctx context.Context, createRequest *CreateRequest) (*classDomain.ClassEntity, error) {
+	if err := userDomain.IsIdValid(createRequest.UserID); err != nil {
 		return nil, err
 	}
 
-	_, err := useCases.userRepository.Get(ctx, userID)
+	_, err := useCases.userRepository.Get(ctx, createRequest.UserID)
 	if err != nil {
 		return nil, err
 	}
 
-	newClass, err := classDomain.New(name, subject, grade)
+	newClass, err := classDomain.New(createRequest.Name, createRequest.Subject, createRequest.Grade)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +36,7 @@ func (useCases *ClassUseCases) Create(ctx context.Context, userID, name, subject
 		return nil, err
 	}
 
-	newMember, err := memberDomain.New(userID, teacherRole)
+	newMember, err := memberDomain.New(createRequest.UserID, teacherRole)
 	if err != nil {
 		return nil, err
 	}

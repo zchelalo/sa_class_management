@@ -1,0 +1,59 @@
+[33mcommit 97f2a5097587c9eb76fbb81745608f103193bc89[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Thu Nov 7 21:47:04 2024 -0700
+
+    add: router and repository of class
+
+[33mcommit e537bdf132c1d3a641a486ad21d2058b429420f8[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Thu Nov 7 17:33:38 2024 -0700
+
+    add: proto files and protoclass command on makefile
+
+[33mcommit 606d1a1758009c55047d378cbc3ca7b220cc3bbb[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Tue Nov 5 18:00:15 2024 -0700
+
+    add: code to classes table
+
+[33mcommit 180381ba983810742583520bef7ef321f0c643f2[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Tue Oct 29 23:40:14 2024 -0700
+
+    add: sa_proto submodule
+
+[33mcommit 74c9409fdfffd8cf10b15b6e1335d4da5c242ef9[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Tue Oct 29 21:39:03 2024 -0700
+
+    add: logger, db connection and config to bootstrap package
+
+[33mcommit 433a42285edfebd58ce5b4fac3f52a95e62703f9[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Tue Oct 29 17:53:42 2024 -0700
+
+    add: meta package
+
+[33mcommit 53135763234ebf383a9707a7dd827cfabef3b2ad[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Mon Oct 28 18:46:42 2024 -0700
+
+    update: sqlc queries management
+
+[33mcommit 89a55795cf4216c41974436f7021354326a66ac7[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Thu Sep 19 17:05:55 2024 -0700
+
+    add: db package, create execTx function to make transactions
+
+[33mcommit 4dfc5884855fde38460997c99e00b2cfe64f489c[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Wed Sep 18 19:45:44 2024 -0700
+
+    add: initial phase of the microservice, dockers, sqlc conf
+
+[33mcommit 99892c03297ef581e8472bb1dd86278287d8ea99[m
+Author: zchelalo <eduardosaavedra687@gmail.com>
+Date:   Wed Sep 18 17:45:53 2024 -0700
+
+    init

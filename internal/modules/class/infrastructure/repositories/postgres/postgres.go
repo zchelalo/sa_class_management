@@ -1,4 +1,4 @@
-package classPostgres
+package classPostgresRepo
 
 import (
 	"context"

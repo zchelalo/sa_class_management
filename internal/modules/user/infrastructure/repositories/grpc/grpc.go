@@ -1,4 +1,4 @@
-package userGRPC
+package userGRPCRepo
 
 import (
 	"context"
@@ -14,7 +14,7 @@ type GRPCRepository struct {
 	client userProto.UserServiceClient
 }
 
-func NewGRPCRepository(client userProto.UserServiceClient) userDomain.UserRepository {
+func New(client userProto.UserServiceClient) userDomain.UserRepository {
 	return &GRPCRepository{
 		client: client,
 	}
