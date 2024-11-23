@@ -8,6 +8,7 @@ import (
 	userError "github.com/zchelalo/sa_class_management/internal/modules/user/error"
 	classProto "github.com/zchelalo/sa_class_management/pkg/proto/class"
 	"github.com/zchelalo/sa_class_management/pkg/util"
+	"google.golang.org/grpc/codes"
 )
 
 func (router *ClassRouter) CreateClass(ctx context.Context, req *classProto.CreateClassRequest) (*classProto.CreateClassResponse, error) {
@@ -18,7 +19,10 @@ func (router *ClassRouter) CreateClass(ctx context.Context, req *classProto.Crea
 		Grade:   req.GetGrade(),
 	})
 	if err != nil {
-		classErrorResponse := &classProto.ClassError{}
+		errorToReturn := &classProto.ClassError{
+			Code:    int32(codes.Internal),
+			Message: "Internal server error",
+		}
 
 		badRequestErrors := []error{
 			classError.ErrNameRequired,
@@ -33,10 +37,22 @@ func (router *ClassRouter) CreateClass(ctx context.Context, req *classProto.Crea
 		}
 
 		if util.IsErrorType(err, badRequestErrors) {
-
+			errorToReturn.Code = int32(codes.InvalidArgument)
+			errorToReturn.Message = err.Error()
 		}
 
-		return nil, err
+		if err == userError.ErrUserNotFound {
+			errorToReturn.Code = int32(codes.NotFound)
+			errorToReturn.Message = err.Error()
+		}
+
+		classErrorResponse := &classProto.CreateClassResponse{
+			Result: &classProto.CreateClassResponse_Error{
+				Error: errorToReturn,
+			},
+		}
+
+		return classErrorResponse, nil
 	}
 
 	response := &classProto.CreateClassResponse{
