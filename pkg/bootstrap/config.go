@@ -12,13 +12,14 @@ var (
 )
 
 type Config struct {
-	Port                  int32  `mapstructure:"PORT"`
-	DBHost                string `mapstructure:"DB_HOST"`
-	DBUser                string `mapstructure:"DB_USER"`
-	DBPass                string `mapstructure:"DB_PASS"`
-	DBName                string `mapstructure:"DB_NAME"`
-	DBPort                int32  `mapstructure:"DB_PORT"`
-	PaginatorLimitDefault int32  `mapstructure:"PAGINATOR_LIMIT_DEFAULT"`
+	Port                   int32  `mapstructure:"PORT"`
+	DBHost                 string `mapstructure:"DB_HOST"`
+	DBUser                 string `mapstructure:"DB_USER"`
+	DBPass                 string `mapstructure:"DB_PASS"`
+	DBName                 string `mapstructure:"DB_NAME"`
+	DBPort                 int32  `mapstructure:"DB_PORT"`
+	PaginatorLimitDefault  int32  `mapstructure:"PAGINATOR_LIMIT_DEFAULT"`
+	UserMicroserviceDomain string `mapstructure:"USER_MS_DOMAIN"`
 }
 
 func LoadConfig(path string) (Config, error) {

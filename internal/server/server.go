@@ -1,12 +1,13 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"net"
 
 	_ "github.com/lib/pq"
+	classGRPC "github.com/zchelalo/sa_class_management/internal/modules/class/infrastructure/adapters/grpc"
 	"github.com/zchelalo/sa_class_management/pkg/bootstrap"
+	classProto "github.com/zchelalo/sa_class_management/pkg/proto/class"
 	"github.com/zchelalo/sa_class_management/pkg/sqlc/db"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -20,13 +21,8 @@ func Start() {
 		logger.Fatal("cannot connect to db:", err)
 	}
 
-	// store := db.New(conn)
-	_ = db.New(conn)
+	store := db.New(conn)
 
-	// ctx := context.Background()
-	_ = context.Background()
-
-	// userRouter := userInfrastructure.NewUserRouter(userStore, ctx)
 	config := bootstrap.GetConfig()
 
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", config.Port))
@@ -35,7 +31,9 @@ func Start() {
 	}
 
 	server := grpc.NewServer()
-	// userProto.RegisterUserServiceServer(server, userRouter)
+
+	classRouter := classGRPC.New(store)
+	classProto.RegisterClassServiceServer(server, classRouter)
 
 	reflection.Register(server)
 
