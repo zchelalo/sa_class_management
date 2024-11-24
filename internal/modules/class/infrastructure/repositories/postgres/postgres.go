@@ -101,3 +101,12 @@ func (r *PostgresRepository) List(ctx context.Context, userID string, offset, li
 
 	return classEntities, nil
 }
+
+func (r *PostgresRepository) Count(ctx context.Context, userID string) (int32, error) {
+	count, err := r.store.ClassQueries.CountClasses(ctx, userID)
+	if err != nil {
+		return 0, err
+	}
+
+	return int32(count), nil
+}

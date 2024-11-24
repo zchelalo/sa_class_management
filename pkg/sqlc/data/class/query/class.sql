@@ -24,6 +24,14 @@ ORDER BY classes.created_at DESC
 OFFSET $2
 LIMIT $3;
 
+-- name: CountClasses :one
+SELECT COUNT(*)
+FROM classes
+INNER JOIN members ON classes.id = members.class_id
+WHERE members.user_id = $1
+AND classes.deleted_at IS NULL
+AND members.deleted_at IS NULL;
+
 -- name: CreateClass :one
 INSERT INTO classes (
   id,

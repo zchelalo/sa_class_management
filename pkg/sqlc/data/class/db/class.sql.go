@@ -10,6 +10,22 @@ import (
 	"database/sql"
 )
 
+const countClasses = `-- name: CountClasses :one
+SELECT COUNT(*)
+FROM classes
+INNER JOIN members ON classes.id = members.class_id
+WHERE members.user_id = $1
+AND classes.deleted_at IS NULL
+AND members.deleted_at IS NULL
+`
+
+func (q *Queries) CountClasses(ctx context.Context, userID string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countClasses, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createClass = `-- name: CreateClass :one
 INSERT INTO classes (
   id,

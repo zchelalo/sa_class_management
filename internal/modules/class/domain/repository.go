@@ -10,4 +10,5 @@ type ClassRepository interface {
 	Create(ctx context.Context, newMember *memberDomain.MemberEntity, newClass *ClassEntity) (*ClassEntity, error)
 	Join(ctx context.Context, newMember *memberDomain.MemberEntity, classID string) error
 	List(ctx context.Context, userID string, offset, limit int32) ([]*ClassEntity, error)
+	Count(ctx context.Context, userID string) (int32, error)
 }

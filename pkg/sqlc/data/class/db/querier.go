@@ -9,6 +9,7 @@ import (
 )
 
 type Querier interface {
+	CountClasses(ctx context.Context, userID string) (int64, error)
 	CreateClass(ctx context.Context, arg CreateClassParams) (Class, error)
 	GetClass(ctx context.Context, id string) (GetClassRow, error)
 	ListClasses(ctx context.Context, arg ListClassesParams) ([]ListClassesRow, error)

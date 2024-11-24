@@ -75,6 +75,22 @@ func IsGradeValid(grade string) error {
 	return nil
 }
 
+func IsPageValid(page int32) error {
+	if page < 1 {
+		return classError.ErrPageInvalid
+	}
+
+	return nil
+}
+
+func IsLimitValid(limit int32) error {
+	if limit < 1 {
+		return classError.ErrLimitInvalid
+	}
+
+	return nil
+}
+
 func generateUniqueCode(length int) (string, error) {
 	b := make([]byte, length)
 	for i := range b {
