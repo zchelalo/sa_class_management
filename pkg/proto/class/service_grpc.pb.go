@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ClassService_CreateClass_FullMethodName = "/ClassService/createClass"
-	ClassService_JoinClass_FullMethodName   = "/ClassService/joinClass"
-	ClassService_ListClasses_FullMethodName = "/ClassService/listClasses"
+	ClassService_CreateClass_FullMethodName  = "/ClassService/createClass"
+	ClassService_JoinClass_FullMethodName    = "/ClassService/joinClass"
+	ClassService_ListClasses_FullMethodName  = "/ClassService/listClasses"
+	ClassService_GetClassCode_FullMethodName = "/ClassService/getClassCode"
 )
 
 // ClassServiceClient is the client API for ClassService service.
@@ -31,6 +32,7 @@ type ClassServiceClient interface {
 	CreateClass(ctx context.Context, in *CreateClassRequest, opts ...grpc.CallOption) (*CreateClassResponse, error)
 	JoinClass(ctx context.Context, in *JoinClassRequest, opts ...grpc.CallOption) (*JoinClassResponse, error)
 	ListClasses(ctx context.Context, in *ListClassesRequest, opts ...grpc.CallOption) (*ListClassesResponse, error)
+	GetClassCode(ctx context.Context, in *GetClassCodeRequest, opts ...grpc.CallOption) (*GetClassCodeResponse, error)
 }
 
 type classServiceClient struct {
@@ -71,6 +73,16 @@ func (c *classServiceClient) ListClasses(ctx context.Context, in *ListClassesReq
 	return out, nil
 }
 
+func (c *classServiceClient) GetClassCode(ctx context.Context, in *GetClassCodeRequest, opts ...grpc.CallOption) (*GetClassCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetClassCodeResponse)
+	err := c.cc.Invoke(ctx, ClassService_GetClassCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClassServiceServer is the server API for ClassService service.
 // All implementations must embed UnimplementedClassServiceServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type ClassServiceServer interface {
 	CreateClass(context.Context, *CreateClassRequest) (*CreateClassResponse, error)
 	JoinClass(context.Context, *JoinClassRequest) (*JoinClassResponse, error)
 	ListClasses(context.Context, *ListClassesRequest) (*ListClassesResponse, error)
+	GetClassCode(context.Context, *GetClassCodeRequest) (*GetClassCodeResponse, error)
 	mustEmbedUnimplementedClassServiceServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedClassServiceServer) JoinClass(context.Context, *JoinClassRequ
 }
 func (UnimplementedClassServiceServer) ListClasses(context.Context, *ListClassesRequest) (*ListClassesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListClasses not implemented")
+}
+func (UnimplementedClassServiceServer) GetClassCode(context.Context, *GetClassCodeRequest) (*GetClassCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetClassCode not implemented")
 }
 func (UnimplementedClassServiceServer) mustEmbedUnimplementedClassServiceServer() {}
 func (UnimplementedClassServiceServer) testEmbeddedByValue()                      {}
@@ -172,6 +188,24 @@ func _ClassService_ListClasses_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClassService_GetClassCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetClassCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClassServiceServer).GetClassCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClassService_GetClassCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClassServiceServer).GetClassCode(ctx, req.(*GetClassCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClassService_ServiceDesc is the grpc.ServiceDesc for ClassService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var ClassService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "listClasses",
 			Handler:    _ClassService_ListClasses_Handler,
+		},
+		{
+			MethodName: "getClassCode",
+			Handler:    _ClassService_GetClassCode_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
