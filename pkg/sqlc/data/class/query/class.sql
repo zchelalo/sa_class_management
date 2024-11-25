@@ -9,6 +9,17 @@ WHERE id = $1
 AND deleted_at IS NULL
 LIMIT 1;
 
+-- name: GetClassByCode :one
+SELECT
+  id,
+  name,
+  subject,
+  grade
+FROM classes
+WHERE code = $1
+AND deleted_at IS NULL
+LIMIT 1;
+
 -- name: ListClasses :many
 SELECT
   classes.id,

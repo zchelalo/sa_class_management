@@ -103,6 +103,37 @@ func (q *Queries) GetClass(ctx context.Context, id string) (GetClassRow, error) 
 	return i, err
 }
 
+const getClassByCode = `-- name: GetClassByCode :one
+SELECT
+  id,
+  name,
+  subject,
+  grade
+FROM classes
+WHERE code = $1
+AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetClassByCodeRow struct {
+	ID      string         `json:"id"`
+	Name    string         `json:"name"`
+	Subject sql.NullString `json:"subject"`
+	Grade   sql.NullString `json:"grade"`
+}
+
+func (q *Queries) GetClassByCode(ctx context.Context, code string) (GetClassByCodeRow, error) {
+	row := q.db.QueryRowContext(ctx, getClassByCode, code)
+	var i GetClassByCodeRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Subject,
+		&i.Grade,
+	)
+	return i, err
+}
+
 const listClasses = `-- name: ListClasses :many
 SELECT
   classes.id,

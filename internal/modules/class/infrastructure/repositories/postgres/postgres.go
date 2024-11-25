@@ -110,3 +110,21 @@ func (r *PostgresRepository) Count(ctx context.Context, userID string) (int32, e
 
 	return int32(count), nil
 }
+
+func (r *PostgresRepository) GetClassByCode(ctx context.Context, code string) (*classDomain.ClassEntity, error) {
+	classObtained, err := r.store.ClassQueries.GetClassByCode(ctx, code)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, classError.ErrClassNotFound
+		}
+
+		return nil, err
+	}
+
+	return &classDomain.ClassEntity{
+		ID:      classObtained.ID,
+		Name:    classObtained.Name,
+		Subject: classObtained.Subject.String,
+		Grade:   classObtained.Grade.String,
+	}, nil
+}

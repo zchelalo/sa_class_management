@@ -15,3 +15,6 @@ var ErrClassNotFound = errors.New("class not found")
 
 var ErrPageInvalid = errors.New("page is invalid")
 var ErrLimitInvalid = errors.New("limit is invalid")
+
+var ErrCodeRequired = errors.New("code is required")
+var ErrCodeInvalid = errors.New("code is invalid")

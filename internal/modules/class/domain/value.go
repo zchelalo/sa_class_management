@@ -9,6 +9,7 @@ import (
 )
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const codeLength = 6
 
 func New(name, subject, grade string) (*ClassEntity, error) {
 	id := uuid.NewString()
@@ -25,7 +26,7 @@ func New(name, subject, grade string) (*ClassEntity, error) {
 		return nil, err
 	}
 
-	code, err := generateUniqueCode(6)
+	code, err := generateUniqueCode(codeLength)
 	if err != nil {
 		return nil, err
 	}
@@ -86,6 +87,18 @@ func IsPageValid(page int32) error {
 func IsLimitValid(limit int32) error {
 	if limit < 1 {
 		return classError.ErrLimitInvalid
+	}
+
+	return nil
+}
+
+func IsCodeValid(code string) error {
+	if code == "" {
+		return classError.ErrCodeRequired
+	}
+
+	if len(code) != codeLength {
+		return classError.ErrCodeInvalid
 	}
 
 	return nil
