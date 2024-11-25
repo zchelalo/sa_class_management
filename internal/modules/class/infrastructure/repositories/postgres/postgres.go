@@ -128,3 +128,32 @@ func (r *PostgresRepository) GetClassByCode(ctx context.Context, code string) (*
 		Grade:   classObtained.Grade.String,
 	}, nil
 }
+
+func (r *PostgresRepository) GetMemberRoleByClassIDAndUserID(ctx context.Context, classID, userID string) (string, error) {
+	roleObtained, err := r.store.ClassQueries.GetMemberRoleByClassIDAndUserID(ctx, classData.GetMemberRoleByClassIDAndUserIDParams{
+		ClassID: classID,
+		UserID:  userID,
+	})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", classError.ErrClassNotFound
+		}
+
+		return "", err
+	}
+
+	return roleObtained, nil
+}
+
+func (r *PostgresRepository) GetClassCodeByClassID(ctx context.Context, classID string) (string, error) {
+	code, err := r.store.ClassQueries.GetClassCodeByClassID(ctx, classID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", classError.ErrClassNotFound
+		}
+
+		return "", err
+	}
+
+	return code, nil
+}

@@ -40,6 +40,18 @@ func New(name, subject, grade string) (*ClassEntity, error) {
 	}, nil
 }
 
+func IsIdValid(id string) error {
+	if id == "" {
+		return classError.ErrIDRequired
+	}
+
+	if _, err := uuid.Parse(id); err != nil {
+		return classError.ErrIDInvalid
+	}
+
+	return nil
+}
+
 func IsNameValid(name string) error {
 	if name == "" {
 		return classError.ErrNameRequired

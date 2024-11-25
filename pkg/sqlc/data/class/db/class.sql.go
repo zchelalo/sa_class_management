@@ -134,6 +134,48 @@ func (q *Queries) GetClassByCode(ctx context.Context, code string) (GetClassByCo
 	return i, err
 }
 
+const getClassCodeByClassID = `-- name: GetClassCodeByClassID :one
+SELECT
+  code
+FROM classes
+WHERE id = $1
+AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetClassCodeByClassID(ctx context.Context, id string) (string, error) {
+	row := q.db.QueryRowContext(ctx, getClassCodeByClassID, id)
+	var code string
+	err := row.Scan(&code)
+	return code, err
+}
+
+const getMemberRoleByClassIDAndUserID = `-- name: GetMemberRoleByClassIDAndUserID :one
+SELECT
+  roles.key
+FROM classes
+INNER JOIN members ON classes.id = members.class_id
+INNER JOIN roles ON members.role_id = roles.id
+WHERE members.class_id = $1
+AND members.user_id = $2
+AND classes.deleted_at IS NULL
+AND members.deleted_at IS NULL
+AND roles.deleted_at IS NULL
+LIMIT 1
+`
+
+type GetMemberRoleByClassIDAndUserIDParams struct {
+	ClassID string `json:"class_id"`
+	UserID  string `json:"user_id"`
+}
+
+func (q *Queries) GetMemberRoleByClassIDAndUserID(ctx context.Context, arg GetMemberRoleByClassIDAndUserIDParams) (string, error) {
+	row := q.db.QueryRowContext(ctx, getMemberRoleByClassIDAndUserID, arg.ClassID, arg.UserID)
+	var key string
+	err := row.Scan(&key)
+	return key, err
+}
+
 const listClasses = `-- name: ListClasses :many
 SELECT
   classes.id,

@@ -13,6 +13,8 @@ type Querier interface {
 	CreateClass(ctx context.Context, arg CreateClassParams) (Class, error)
 	GetClass(ctx context.Context, id string) (GetClassRow, error)
 	GetClassByCode(ctx context.Context, code string) (GetClassByCodeRow, error)
+	GetClassCodeByClassID(ctx context.Context, id string) (string, error)
+	GetMemberRoleByClassIDAndUserID(ctx context.Context, arg GetMemberRoleByClassIDAndUserIDParams) (string, error)
 	ListClasses(ctx context.Context, arg ListClassesParams) ([]ListClassesRow, error)
 }
 

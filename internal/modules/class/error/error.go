@@ -18,3 +18,8 @@ var ErrLimitInvalid = errors.New("limit is invalid")
 
 var ErrCodeRequired = errors.New("code is required")
 var ErrCodeInvalid = errors.New("code is invalid")
+
+var ErrIDRequired = errors.New("id is required")
+var ErrIDInvalid = errors.New("id is invalid")
+
+var ErrUnauthorized = errors.New("unauthorized access")

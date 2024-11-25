@@ -12,4 +12,6 @@ type ClassRepository interface {
 	List(ctx context.Context, userID string, offset, limit int32) ([]*ClassEntity, error)
 	Count(ctx context.Context, userID string) (int32, error)
 	GetClassByCode(ctx context.Context, code string) (*ClassEntity, error)
+	GetMemberRoleByClassIDAndUserID(ctx context.Context, classID, userID string) (string, error)
+	GetClassCodeByClassID(ctx context.Context, classID string) (string, error)
 }
