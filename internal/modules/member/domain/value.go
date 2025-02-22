@@ -3,23 +3,25 @@ package memberDomain
 import (
 	"github.com/google/uuid"
 	memberError "github.com/zchelalo/sa_class_management/internal/modules/member/error"
+	memberRoleDomain "github.com/zchelalo/sa_class_management/internal/modules/member_role/domain"
+	userDomain "github.com/zchelalo/sa_class_management/internal/modules/user/domain"
 )
 
-func New(userID, roleID string) (*MemberEntity, error) {
+func New(user userDomain.UserEntity, role memberRoleDomain.MemberRoleEntity) (*MemberEntity, error) {
 	id := uuid.NewString()
 
-	if err := IsUserIdValid(userID); err != nil {
+	if err := userDomain.IsIdValid(user.ID); err != nil {
 		return nil, err
 	}
 
-	if err := IsRoleIDValid(roleID); err != nil {
+	if err := memberRoleDomain.IsIdValid(role.ID); err != nil {
 		return nil, err
 	}
 
 	return &MemberEntity{
-		ID:     id,
-		RoleID: roleID,
-		UserID: userID,
+		ID:   id,
+		User: user,
+		Role: role,
 	}, nil
 }
 
@@ -30,30 +32,6 @@ func IsIdValid(id string) error {
 
 	if _, err := uuid.Parse(id); err != nil {
 		return memberError.ErrIdInvalid
-	}
-
-	return nil
-}
-
-func IsUserIdValid(userID string) error {
-	if userID == "" {
-		return memberError.ErrUserIdRequired
-	}
-
-	if _, err := uuid.Parse(userID); err != nil {
-		return memberError.ErrUserIdInvalid
-	}
-
-	return nil
-}
-
-func IsRoleIDValid(roleID string) error {
-	if roleID == "" {
-		return memberError.ErrRoleIdRequired
-	}
-
-	if _, err := uuid.Parse(roleID); err != nil {
-		return memberError.ErrRoleIdInvalid
 	}
 
 	return nil

@@ -1,25 +1,31 @@
 -- name: GetMember :one
 SELECT
-  id,
-  role_id,
-  user_id,
-  class_id
+  members.id,
+  members.user_id,
+  members.class_id,
+  roles.id as role_id,
+  roles.key as role_key
 FROM members
-WHERE user_id = $1
-AND class_id = $2
-AND deleted_at IS NULL
+INNER JOIN roles ON members.role_id = roles.id
+WHERE members.user_id = $1
+AND members.class_id = $2
+AND members.deleted_at IS NULL
+AND roles.deleted_at IS NULL
 LIMIT 1;
 
 -- name: ListMembers :many
 SELECT
-  id,
-  role_id,
-  user_id,
-  class_id
+  members.id,
+  members.user_id,
+  members.class_id,
+  roles.id as role_id,
+  roles.key as role_key
 FROM members
-WHERE class_id = $1
-AND deleted_at IS NULL
-ORDER BY created_at DESC
+INNER JOIN roles ON members.role_id = roles.id
+WHERE members.class_id = $1
+AND members.deleted_at IS NULL
+AND roles.deleted_at IS NULL
+ORDER BY members.created_at DESC
 LIMIT $2
 OFFSET $3;
 

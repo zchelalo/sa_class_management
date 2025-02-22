@@ -6,6 +6,8 @@ import (
 
 	memberDomain "github.com/zchelalo/sa_class_management/internal/modules/member/domain"
 	memberError "github.com/zchelalo/sa_class_management/internal/modules/member/error"
+	memberRoleDomain "github.com/zchelalo/sa_class_management/internal/modules/member_role/domain"
+	userDomain "github.com/zchelalo/sa_class_management/internal/modules/user/domain"
 	memberData "github.com/zchelalo/sa_class_management/pkg/sqlc/data/member/db"
 	"github.com/zchelalo/sa_class_management/pkg/sqlc/db"
 )
@@ -37,9 +39,14 @@ func (r *PostgresRepository) ListByClassID(ctx context.Context, classID string, 
 	var memberEntities []*memberDomain.MemberEntity
 	for _, member := range members {
 		memberEntities = append(memberEntities, &memberDomain.MemberEntity{
-			ID:     member.ID,
-			UserID: member.UserID,
-			RoleID: member.RoleID,
+			ID: member.ID,
+			User: userDomain.UserEntity{
+				ID: member.UserID,
+			},
+			Role: memberRoleDomain.MemberRoleEntity{
+				ID:  member.RoleID,
+				Key: member.RoleKey,
+			},
 		})
 	}
 
@@ -69,9 +76,14 @@ func (r *PostgresRepository) GetByUserIDAndClassID(ctx context.Context, userID, 
 	}
 
 	return &memberDomain.MemberEntity{
-		ID:     memberObtained.ID,
-		UserID: memberObtained.UserID,
-		RoleID: memberObtained.RoleID,
+		ID: memberObtained.ID,
+		User: userDomain.UserEntity{
+			ID: memberObtained.UserID,
+		},
+		Role: memberRoleDomain.MemberRoleEntity{
+			ID:  memberObtained.RoleID,
+			Key: memberObtained.RoleKey,
+		},
 	}, nil
 }
 

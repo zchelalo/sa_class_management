@@ -84,14 +84,17 @@ func (q *Queries) DeleteMember(ctx context.Context, arg DeleteMemberParams) erro
 
 const getMember = `-- name: GetMember :one
 SELECT
-  id,
-  role_id,
-  user_id,
-  class_id
+  members.id,
+  members.user_id,
+  members.class_id,
+  roles.id as role_id,
+  roles.key as role_key
 FROM members
-WHERE user_id = $1
-AND class_id = $2
-AND deleted_at IS NULL
+INNER JOIN roles ON members.role_id = roles.id
+WHERE members.user_id = $1
+AND members.class_id = $2
+AND members.deleted_at IS NULL
+AND roles.deleted_at IS NULL
 LIMIT 1
 `
 
@@ -102,9 +105,10 @@ type GetMemberParams struct {
 
 type GetMemberRow struct {
 	ID      string `json:"id"`
-	RoleID  string `json:"role_id"`
 	UserID  string `json:"user_id"`
 	ClassID string `json:"class_id"`
+	RoleID  string `json:"role_id"`
+	RoleKey string `json:"role_key"`
 }
 
 func (q *Queries) GetMember(ctx context.Context, arg GetMemberParams) (GetMemberRow, error) {
@@ -112,23 +116,27 @@ func (q *Queries) GetMember(ctx context.Context, arg GetMemberParams) (GetMember
 	var i GetMemberRow
 	err := row.Scan(
 		&i.ID,
-		&i.RoleID,
 		&i.UserID,
 		&i.ClassID,
+		&i.RoleID,
+		&i.RoleKey,
 	)
 	return i, err
 }
 
 const listMembers = `-- name: ListMembers :many
 SELECT
-  id,
-  role_id,
-  user_id,
-  class_id
+  members.id,
+  members.user_id,
+  members.class_id,
+  roles.id as role_id,
+  roles.key as role_key
 FROM members
-WHERE class_id = $1
-AND deleted_at IS NULL
-ORDER BY created_at DESC
+INNER JOIN roles ON members.role_id = roles.id
+WHERE members.class_id = $1
+AND members.deleted_at IS NULL
+AND roles.deleted_at IS NULL
+ORDER BY members.created_at DESC
 LIMIT $2
 OFFSET $3
 `
@@ -141,9 +149,10 @@ type ListMembersParams struct {
 
 type ListMembersRow struct {
 	ID      string `json:"id"`
-	RoleID  string `json:"role_id"`
 	UserID  string `json:"user_id"`
 	ClassID string `json:"class_id"`
+	RoleID  string `json:"role_id"`
+	RoleKey string `json:"role_key"`
 }
 
 func (q *Queries) ListMembers(ctx context.Context, arg ListMembersParams) ([]ListMembersRow, error) {
@@ -157,9 +166,10 @@ func (q *Queries) ListMembers(ctx context.Context, arg ListMembersParams) ([]Lis
 		var i ListMembersRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.RoleID,
 			&i.UserID,
 			&i.ClassID,
+			&i.RoleID,
+			&i.RoleKey,
 		); err != nil {
 			return nil, err
 		}
