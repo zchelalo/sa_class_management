@@ -23,3 +23,5 @@ var ErrIDRequired = errors.New("id is required")
 var ErrIDInvalid = errors.New("id is invalid")
 
 var ErrUnauthorized = errors.New("unauthorized access")
+
+var ErrAlreadyJoined = errors.New("already joined")
