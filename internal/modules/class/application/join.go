@@ -4,7 +4,9 @@ import (
 	"context"
 
 	classDomain "github.com/zchelalo/sa_class_management/internal/modules/class/domain"
+	classError "github.com/zchelalo/sa_class_management/internal/modules/class/error"
 	memberDomain "github.com/zchelalo/sa_class_management/internal/modules/member/domain"
+	memberError "github.com/zchelalo/sa_class_management/internal/modules/member/error"
 	userDomain "github.com/zchelalo/sa_class_management/internal/modules/user/domain"
 	"github.com/zchelalo/sa_class_management/pkg/constants"
 )
@@ -27,6 +29,11 @@ func (useCases *ClassUseCases) Join(ctx context.Context, joinRequest *JoinReques
 	classObtained, err := useCases.classRepository.GetClassByCode(ctx, joinRequest.Code)
 	if err != nil {
 		return nil, err
+	}
+
+	_, err = useCases.memberRepository.GetByUserIDAndClassID(ctx, joinRequest.UserID, classObtained.ID)
+	if err != memberError.ErrMemberNotFound {
+		return nil, classError.ErrAlreadyJoined
 	}
 
 	studentRole, err := useCases.memberRepository.GetRoleIDByKey(ctx, string(constants.RoleStudent))

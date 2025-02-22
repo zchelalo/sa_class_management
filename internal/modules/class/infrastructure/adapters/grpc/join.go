@@ -40,6 +40,11 @@ func (router *ClassRouter) JoinClass(ctx context.Context, req *classProto.JoinCl
 			errorToReturn.Message = err.Error()
 		}
 
+		if err == classError.ErrAlreadyJoined {
+			errorToReturn.Code = int32(codes.AlreadyExists)
+			errorToReturn.Message = err.Error()
+		}
+
 		classErrorResponse := &classProto.JoinClassResponse{
 			Result: &classProto.JoinClassResponse_Error{
 				Error: errorToReturn,
