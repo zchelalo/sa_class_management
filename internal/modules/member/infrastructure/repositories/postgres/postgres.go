@@ -87,15 +87,18 @@ func (r *PostgresRepository) GetByUserIDAndClassID(ctx context.Context, userID, 
 	}, nil
 }
 
-func (r *PostgresRepository) GetRoleIDByKey(ctx context.Context, key string) (string, error) {
+func (r *PostgresRepository) GetRoleIDByKey(ctx context.Context, key string) (*memberRoleDomain.MemberRoleEntity, error) {
 	roleObtained, err := r.store.RoleQueries.GetRoleByKey(ctx, key)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", memberError.ErrRoleNotFound
+			return nil, memberError.ErrRoleNotFound
 		}
 
-		return "", err
+		return nil, err
 	}
 
-	return roleObtained.ID, nil
+	return &memberRoleDomain.MemberRoleEntity{
+		ID:  roleObtained.ID,
+		Key: roleObtained.Key,
+	}, nil
 }

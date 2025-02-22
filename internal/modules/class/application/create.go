@@ -5,6 +5,7 @@ import (
 
 	classDomain "github.com/zchelalo/sa_class_management/internal/modules/class/domain"
 	memberDomain "github.com/zchelalo/sa_class_management/internal/modules/member/domain"
+	memberRoleDomain "github.com/zchelalo/sa_class_management/internal/modules/member_role/domain"
 	userDomain "github.com/zchelalo/sa_class_management/internal/modules/user/domain"
 	"github.com/zchelalo/sa_class_management/pkg/constants"
 )
@@ -21,7 +22,7 @@ func (useCases *ClassUseCases) Create(ctx context.Context, createRequest *Create
 		return nil, err
 	}
 
-	_, err := useCases.userRepository.Get(ctx, createRequest.UserID)
+	userObtained, err := useCases.userRepository.Get(ctx, createRequest.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +37,15 @@ func (useCases *ClassUseCases) Create(ctx context.Context, createRequest *Create
 		return nil, err
 	}
 
-	newMember, err := memberDomain.New(createRequest.UserID, teacherRole)
+	newMember, err := memberDomain.New(userDomain.UserEntity{
+		ID:       userObtained.ID,
+		Name:     userObtained.Name,
+		Email:    userObtained.Email,
+		Verified: userObtained.Verified,
+	}, memberRoleDomain.MemberRoleEntity{
+		ID:  teacherRole.ID,
+		Key: teacherRole.Key,
+	})
 	if err != nil {
 		return nil, err
 	}

@@ -39,8 +39,8 @@ func (r *PostgresRepository) Create(ctx context.Context, newMember *memberDomain
 
 		_, err = store.MemberQueries.CreateMember(ctx, memberData.CreateMemberParams{
 			ID:      newMember.ID,
-			RoleID:  newMember.RoleID,
-			UserID:  newMember.UserID,
+			RoleID:  newMember.Role.ID,
+			UserID:  newMember.User.ID,
 			ClassID: classCreated.ID,
 		})
 		if err != nil {
@@ -64,8 +64,8 @@ func (r *PostgresRepository) Create(ctx context.Context, newMember *memberDomain
 func (r *PostgresRepository) Join(ctx context.Context, newMember *memberDomain.MemberEntity, classID string) error {
 	_, err := r.store.MemberQueries.CreateMember(ctx, memberData.CreateMemberParams{
 		ID:      newMember.ID,
-		RoleID:  newMember.RoleID,
-		UserID:  newMember.UserID,
+		RoleID:  newMember.Role.ID,
+		UserID:  newMember.User.ID,
 		ClassID: classID,
 	})
 	if err != nil {

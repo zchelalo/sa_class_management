@@ -7,6 +7,7 @@ import (
 	classError "github.com/zchelalo/sa_class_management/internal/modules/class/error"
 	memberDomain "github.com/zchelalo/sa_class_management/internal/modules/member/domain"
 	memberError "github.com/zchelalo/sa_class_management/internal/modules/member/error"
+	memberRoleDomain "github.com/zchelalo/sa_class_management/internal/modules/member_role/domain"
 	userDomain "github.com/zchelalo/sa_class_management/internal/modules/user/domain"
 	"github.com/zchelalo/sa_class_management/pkg/constants"
 )
@@ -21,7 +22,7 @@ func (useCases *ClassUseCases) Join(ctx context.Context, joinRequest *JoinReques
 		return nil, err
 	}
 
-	_, err := useCases.userRepository.Get(ctx, joinRequest.UserID)
+	userObtained, err := useCases.userRepository.Get(ctx, joinRequest.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +42,15 @@ func (useCases *ClassUseCases) Join(ctx context.Context, joinRequest *JoinReques
 		return nil, err
 	}
 
-	newMember, err := memberDomain.New(joinRequest.UserID, studentRole)
+	newMember, err := memberDomain.New(userDomain.UserEntity{
+		ID:       userObtained.ID,
+		Name:     userObtained.Name,
+		Email:    userObtained.Email,
+		Verified: userObtained.Verified,
+	}, memberRoleDomain.MemberRoleEntity{
+		ID:  studentRole.ID,
+		Key: studentRole.Key,
+	})
 	if err != nil {
 		return nil, err
 	}
