@@ -9,6 +9,20 @@ import (
 	"context"
 )
 
+const countMembers = `-- name: CountMembers :one
+SELECT count(*)
+FROM members
+WHERE class_id = $1
+AND deleted_at IS NULL
+`
+
+func (q *Queries) CountMembers(ctx context.Context, classID string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countMembers, classID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createMember = `-- name: CreateMember :one
 INSERT INTO members (
   id,
@@ -103,4 +117,59 @@ func (q *Queries) GetMember(ctx context.Context, arg GetMemberParams) (GetMember
 		&i.ClassID,
 	)
 	return i, err
+}
+
+const listMembers = `-- name: ListMembers :many
+SELECT
+  id,
+  role_id,
+  user_id,
+  class_id
+FROM members
+WHERE class_id = $1
+AND deleted_at IS NULL
+ORDER BY created_at DESC
+LIMIT $2
+OFFSET $3
+`
+
+type ListMembersParams struct {
+	ClassID string `json:"class_id"`
+	Limit   int32  `json:"limit"`
+	Offset  int32  `json:"offset"`
+}
+
+type ListMembersRow struct {
+	ID      string `json:"id"`
+	RoleID  string `json:"role_id"`
+	UserID  string `json:"user_id"`
+	ClassID string `json:"class_id"`
+}
+
+func (q *Queries) ListMembers(ctx context.Context, arg ListMembersParams) ([]ListMembersRow, error) {
+	rows, err := q.db.QueryContext(ctx, listMembers, arg.ClassID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListMembersRow{}
+	for rows.Next() {
+		var i ListMembersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.RoleID,
+			&i.UserID,
+			&i.ClassID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

@@ -12,6 +12,7 @@ var ErrGradeRequired = errors.New("grade is required")
 var ErrGradeTooShort = errors.New("grade must be at least 1 character")
 
 var ErrClassNotFound = errors.New("class not found")
+var ErrClassesNotFound = errors.New("classes not found")
 
 var ErrPageInvalid = errors.New("page is invalid")
 var ErrLimitInvalid = errors.New("limit is invalid")

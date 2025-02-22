@@ -36,7 +36,7 @@ func (router *ClassRouter) ListClasses(ctx context.Context, req *classProto.List
 			errorToReturn.Message = err.Error()
 		}
 
-		if err == userError.ErrUserNotFound {
+		if err == userError.ErrUserNotFound || err == classError.ErrClassesNotFound {
 			errorToReturn.Code = int32(codes.NotFound)
 			errorToReturn.Message = err.Error()
 		}
@@ -62,8 +62,8 @@ func (router *ClassRouter) ListClasses(ctx context.Context, req *classProto.List
 	}
 
 	response := &classProto.ListClassesResponse{
-		Result: &classProto.ListClassesResponse_Classes{
-			Classes: &classProto.ClassesWithMeta{
+		Result: &classProto.ListClassesResponse_Data{
+			Data: &classProto.ClassesWithMeta{
 				Classes: classes,
 				Meta: &classProto.ClassMeta{
 					Page:       classesObtained.Meta.Page,

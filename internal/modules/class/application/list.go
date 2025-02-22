@@ -25,16 +25,16 @@ func (useCases *ClassUseCases) List(ctx context.Context, listRequest *ListReques
 		return nil, err
 	}
 
-	_, err := useCases.userRepository.Get(ctx, listRequest.UserID)
-	if err != nil {
-		return nil, err
-	}
-
 	if err := classDomain.IsPageValid(listRequest.Page); err != nil {
 		return nil, err
 	}
 
 	if err := classDomain.IsLimitValid(listRequest.Limit); err != nil {
+		return nil, err
+	}
+
+	_, err := useCases.userRepository.Get(ctx, listRequest.UserID)
+	if err != nil {
 		return nil, err
 	}
 

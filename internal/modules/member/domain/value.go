@@ -58,3 +58,19 @@ func IsRoleIDValid(roleID string) error {
 
 	return nil
 }
+
+func IsPageValid(page int32) error {
+	if page < 1 {
+		return memberError.ErrPageInvalid
+	}
+
+	return nil
+}
+
+func IsLimitValid(limit int32) error {
+	if limit < 1 {
+		return memberError.ErrLimitInvalid
+	}
+
+	return nil
+}
