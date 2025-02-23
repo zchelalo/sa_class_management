@@ -6,22 +6,22 @@ import (
 
 	userDomain "github.com/zchelalo/sa_class_management/internal/modules/user/domain"
 	userError "github.com/zchelalo/sa_class_management/internal/modules/user/error"
-	userProto "github.com/zchelalo/sa_class_management/pkg/proto/user"
+	"github.com/zchelalo/sa_class_management/pkg/proto"
 	"google.golang.org/grpc/codes"
 )
 
 type GRPCRepository struct {
-	client userProto.UserServiceClient
+	client proto.UserServiceClient
 }
 
-func New(client userProto.UserServiceClient) userDomain.UserRepository {
+func New(client proto.UserServiceClient) userDomain.UserRepository {
 	return &GRPCRepository{
 		client: client,
 	}
 }
 
 func (r *GRPCRepository) Get(ctx context.Context, id string) (*userDomain.UserEntity, error) {
-	user, err := r.client.GetUser(ctx, &userProto.GetUserRequest{
+	user, err := r.client.GetUser(ctx, &proto.GetUserRequest{
 		Id: id,
 	})
 	if err != nil {

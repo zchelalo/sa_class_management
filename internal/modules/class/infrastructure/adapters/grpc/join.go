@@ -6,18 +6,18 @@ import (
 	classApplication "github.com/zchelalo/sa_class_management/internal/modules/class/application"
 	classError "github.com/zchelalo/sa_class_management/internal/modules/class/error"
 	userError "github.com/zchelalo/sa_class_management/internal/modules/user/error"
-	classProto "github.com/zchelalo/sa_class_management/pkg/proto/class"
+	"github.com/zchelalo/sa_class_management/pkg/proto"
 	"github.com/zchelalo/sa_class_management/pkg/util"
 	"google.golang.org/grpc/codes"
 )
 
-func (router *ClassRouter) JoinClass(ctx context.Context, req *classProto.JoinClassRequest) (*classProto.JoinClassResponse, error) {
+func (router *ClassRouter) JoinClass(ctx context.Context, req *proto.JoinClassRequest) (*proto.JoinClassResponse, error) {
 	classObtained, err := router.useCase.Join(ctx, &classApplication.JoinRequest{
 		UserID: req.GetUserId(),
 		Code:   req.GetCode(),
 	})
 	if err != nil {
-		errorToReturn := &classProto.ClassError{
+		errorToReturn := &proto.Error{
 			Code:    int32(codes.Internal),
 			Message: "Internal server error",
 		}
@@ -45,8 +45,8 @@ func (router *ClassRouter) JoinClass(ctx context.Context, req *classProto.JoinCl
 			errorToReturn.Message = err.Error()
 		}
 
-		classErrorResponse := &classProto.JoinClassResponse{
-			Result: &classProto.JoinClassResponse_Error{
+		classErrorResponse := &proto.JoinClassResponse{
+			Result: &proto.JoinClassResponse_Error{
 				Error: errorToReturn,
 			},
 		}
@@ -54,9 +54,9 @@ func (router *ClassRouter) JoinClass(ctx context.Context, req *classProto.JoinCl
 		return classErrorResponse, nil
 	}
 
-	response := &classProto.JoinClassResponse{
-		Result: &classProto.JoinClassResponse_Class{
-			Class: &classProto.ClassData{
+	response := &proto.JoinClassResponse{
+		Result: &proto.JoinClassResponse_Class{
+			Class: &proto.ClassData{
 				Id:      classObtained.ID,
 				Name:    classObtained.Name,
 				Subject: classObtained.Subject,

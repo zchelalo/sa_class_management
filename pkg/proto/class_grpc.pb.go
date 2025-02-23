@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: class/service.proto
+// source: class.proto
 
-package classProto
+package proto
 
 import (
 	context "context"
@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ClassService_CreateClass_FullMethodName  = "/ClassService/createClass"
-	ClassService_JoinClass_FullMethodName    = "/ClassService/joinClass"
-	ClassService_ListClasses_FullMethodName  = "/ClassService/listClasses"
-	ClassService_GetClassCode_FullMethodName = "/ClassService/getClassCode"
+	ClassService_CreateClass_FullMethodName  = "/class.ClassService/createClass"
+	ClassService_JoinClass_FullMethodName    = "/class.ClassService/joinClass"
+	ClassService_ListClasses_FullMethodName  = "/class.ClassService/listClasses"
+	ClassService_GetClassCode_FullMethodName = "/class.ClassService/getClassCode"
 )
 
 // ClassServiceClient is the client API for ClassService service.
@@ -210,7 +210,7 @@ func _ClassService_GetClassCode_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ClassService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ClassService",
+	ServiceName: "class.ClassService",
 	HandlerType: (*ClassServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -231,5 +231,5 @@ var ClassService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "class/service.proto",
+	Metadata: "class.proto",
 }

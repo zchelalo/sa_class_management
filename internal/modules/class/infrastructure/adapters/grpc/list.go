@@ -6,19 +6,19 @@ import (
 	classApplication "github.com/zchelalo/sa_class_management/internal/modules/class/application"
 	classError "github.com/zchelalo/sa_class_management/internal/modules/class/error"
 	userError "github.com/zchelalo/sa_class_management/internal/modules/user/error"
-	classProto "github.com/zchelalo/sa_class_management/pkg/proto/class"
+	"github.com/zchelalo/sa_class_management/pkg/proto"
 	"github.com/zchelalo/sa_class_management/pkg/util"
 	"google.golang.org/grpc/codes"
 )
 
-func (router *ClassRouter) ListClasses(ctx context.Context, req *classProto.ListClassesRequest) (*classProto.ListClassesResponse, error) {
+func (router *ClassRouter) ListClasses(ctx context.Context, req *proto.ListClassesRequest) (*proto.ListClassesResponse, error) {
 	classesObtained, err := router.useCase.List(ctx, &classApplication.ListRequest{
 		UserID: req.GetUserId(),
 		Page:   req.GetPage(),
 		Limit:  req.GetLimit(),
 	})
 	if err != nil {
-		errorToReturn := &classProto.ClassError{
+		errorToReturn := &proto.Error{
 			Code:    int32(codes.Internal),
 			Message: "Internal server error",
 		}
@@ -41,8 +41,8 @@ func (router *ClassRouter) ListClasses(ctx context.Context, req *classProto.List
 			errorToReturn.Message = err.Error()
 		}
 
-		classErrorResponse := &classProto.ListClassesResponse{
-			Result: &classProto.ListClassesResponse_Error{
+		classErrorResponse := &proto.ListClassesResponse{
+			Result: &proto.ListClassesResponse_Error{
 				Error: errorToReturn,
 			},
 		}
@@ -50,9 +50,9 @@ func (router *ClassRouter) ListClasses(ctx context.Context, req *classProto.List
 		return classErrorResponse, nil
 	}
 
-	classes := make([]*classProto.ClassData, 0)
+	classes := make([]*proto.ClassData, 0)
 	for _, classObtained := range classesObtained.Classes {
-		class := &classProto.ClassData{
+		class := &proto.ClassData{
 			Id:      classObtained.ID,
 			Name:    classObtained.Name,
 			Subject: classObtained.Subject,
@@ -61,11 +61,11 @@ func (router *ClassRouter) ListClasses(ctx context.Context, req *classProto.List
 		classes = append(classes, class)
 	}
 
-	response := &classProto.ListClassesResponse{
-		Result: &classProto.ListClassesResponse_Data{
-			Data: &classProto.ClassesWithMeta{
+	response := &proto.ListClassesResponse{
+		Result: &proto.ListClassesResponse_Data{
+			Data: &proto.ClassesWithMeta{
 				Classes: classes,
-				Meta: &classProto.ClassMeta{
+				Meta: &proto.Meta{
 					Page:       classesObtained.Meta.Page,
 					PerPage:    classesObtained.Meta.PerPage,
 					Count:      classesObtained.Meta.PageCount,

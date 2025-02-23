@@ -25,30 +25,11 @@ composebuilddetached:
 sqlc:
 	sqlc generate
 
-protouser:
-	protoc --experimental_allow_proto3_optional \
-		-I=sa_proto \
-		--go_out=./pkg/proto --go_opt=paths=source_relative \
-		--go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
-		sa_proto/user/service.proto
-
-protoclass:
-	protoc --experimental_allow_proto3_optional \
-		-I=sa_proto \
-		--go_out=./pkg/proto --go_opt=paths=source_relative \
-		--go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
-		sa_proto/class/service.proto
-
-protomember:
-	protoc --experimental_allow_proto3_optional \
-		-I=sa_proto \
-		--go_out=./pkg/proto --go_opt=paths=source_relative \
-		--go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
-		sa_proto/member/service.proto
-
 proto:
-	protouser
-	protoclass
-	protomember
+	protoc --experimental_allow_proto3_optional \
+		-I=sa_proto/services \
+		--go_out=./pkg/proto --go_opt=paths=source_relative \
+		--go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
+		sa_proto/services/member.proto sa_proto/services/class.proto sa_proto/services/user.proto sa_proto/services/shared.proto
 
-.PHONY: migrateup migrateup1 migratedown migratedown1 compose composebuild sqlc protouser protoclass protomember proto
+.PHONY: migrateup migrateup1 migratedown migratedown1 compose composebuild sqlc proto

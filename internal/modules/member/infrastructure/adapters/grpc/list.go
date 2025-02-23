@@ -7,12 +7,12 @@ import (
 	memberApplication "github.com/zchelalo/sa_class_management/internal/modules/member/application"
 	memberError "github.com/zchelalo/sa_class_management/internal/modules/member/error"
 	userError "github.com/zchelalo/sa_class_management/internal/modules/user/error"
-	memberProto "github.com/zchelalo/sa_class_management/pkg/proto/member"
+	"github.com/zchelalo/sa_class_management/pkg/proto"
 	"github.com/zchelalo/sa_class_management/pkg/util"
 	"google.golang.org/grpc/codes"
 )
 
-func (router *MemberRouter) ListMembers(ctx context.Context, req *memberProto.ListMembersRequest) (*memberProto.ListMembersResponse, error) {
+func (router *MemberRouter) ListMembers(ctx context.Context, req *proto.ListMembersRequest) (*proto.ListMembersResponse, error) {
 	membersObtained, err := router.useCase.List(ctx, &memberApplication.ListRequest{
 		UserID:  req.GetUserId(),
 		ClassID: req.GetClassId(),
@@ -20,7 +20,7 @@ func (router *MemberRouter) ListMembers(ctx context.Context, req *memberProto.Li
 		Limit:   req.GetLimit(),
 	})
 	if err != nil {
-		errorToReturn := &memberProto.MemberError{
+		errorToReturn := &proto.Error{
 			Code:    int32(codes.Internal),
 			Message: "Internal server error",
 		}
@@ -53,8 +53,8 @@ func (router *MemberRouter) ListMembers(ctx context.Context, req *memberProto.Li
 			errorToReturn.Message = err.Error()
 		}
 
-		classErrorResponse := &memberProto.ListMembersResponse{
-			Result: &memberProto.ListMembersResponse_Error{
+		classErrorResponse := &proto.ListMembersResponse{
+			Result: &proto.ListMembersResponse_Error{
 				Error: errorToReturn,
 			},
 		}
@@ -62,17 +62,17 @@ func (router *MemberRouter) ListMembers(ctx context.Context, req *memberProto.Li
 		return classErrorResponse, nil
 	}
 
-	members := make([]*memberProto.MemberData, 0)
+	members := make([]*proto.MemberData, 0)
 	for _, memberObtained := range membersObtained.Members {
-		member := &memberProto.MemberData{
+		member := &proto.MemberData{
 			Id: memberObtained.ID,
-			User: &memberProto.MemberUserData{
+			User: &proto.UserData{
 				Id:       memberObtained.User.ID,
 				Name:     memberObtained.User.Name,
 				Email:    memberObtained.User.Email,
 				Verified: memberObtained.User.Verified,
 			},
-			Role: &memberProto.MemberRoleData{
+			Role: &proto.MemberRoleData{
 				Id:  memberObtained.Role.ID,
 				Key: memberObtained.Role.Key,
 			},
@@ -80,11 +80,11 @@ func (router *MemberRouter) ListMembers(ctx context.Context, req *memberProto.Li
 		members = append(members, member)
 	}
 
-	response := &memberProto.ListMembersResponse{
-		Result: &memberProto.ListMembersResponse_Data{
-			Data: &memberProto.MembersWithMeta{
+	response := &proto.ListMembersResponse{
+		Result: &proto.ListMembersResponse_Data{
+			Data: &proto.MembersWithMeta{
 				Members: members,
-				Meta: &memberProto.MemberMeta{
+				Meta: &proto.Meta{
 					Page:       membersObtained.Meta.Page,
 					PerPage:    membersObtained.Meta.PerPage,
 					Count:      membersObtained.Meta.PageCount,

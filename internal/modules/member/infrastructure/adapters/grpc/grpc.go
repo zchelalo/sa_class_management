@@ -7,14 +7,13 @@ import (
 	userGRPCRepo "github.com/zchelalo/sa_class_management/internal/modules/user/infrastructure/repositories/grpc"
 	"github.com/zchelalo/sa_class_management/pkg/bootstrap"
 	"github.com/zchelalo/sa_class_management/pkg/constants"
-	memberProto "github.com/zchelalo/sa_class_management/pkg/proto/member"
-	userProto "github.com/zchelalo/sa_class_management/pkg/proto/user"
+	"github.com/zchelalo/sa_class_management/pkg/proto"
 	"github.com/zchelalo/sa_class_management/pkg/sqlc/db"
 )
 
 type MemberRouter struct {
 	useCase *memberApplication.MemberUseCases
-	memberProto.UnimplementedMemberServiceServer
+	proto.UnimplementedMemberServiceServer
 }
 
 func New(store *db.SQLStore) *MemberRouter {
@@ -23,7 +22,7 @@ func New(store *db.SQLStore) *MemberRouter {
 	memberRepository := memberPostgresRepo.New(store)
 
 	userClientConn := bootstrap.GetGRPCClient(constants.UserMicroserviceDomain)
-	userGRPCClient := userProto.NewUserServiceClient(userClientConn)
+	userGRPCClient := proto.NewUserServiceClient(userClientConn)
 	userRepository := userGRPCRepo.New(userGRPCClient)
 
 	memberUseCases := memberApplication.New(classRepository, userRepository, memberRepository)

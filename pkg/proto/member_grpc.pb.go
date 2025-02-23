@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: member/service.proto
+// source: member.proto
 
-package memberProto
+package proto
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MemberService_ListMembers_FullMethodName = "/MemberService/listMembers"
+	MemberService_ListMembers_FullMethodName = "/member.MemberService/listMembers"
 )
 
 // MemberServiceClient is the client API for MemberService service.
@@ -108,7 +108,7 @@ func _MemberService_ListMembers_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var MemberService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "MemberService",
+	ServiceName: "member.MemberService",
 	HandlerType: (*MemberServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -117,5 +117,5 @@ var MemberService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "member/service.proto",
+	Metadata: "member.proto",
 }

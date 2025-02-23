@@ -6,12 +6,12 @@ import (
 	classApplication "github.com/zchelalo/sa_class_management/internal/modules/class/application"
 	classError "github.com/zchelalo/sa_class_management/internal/modules/class/error"
 	userError "github.com/zchelalo/sa_class_management/internal/modules/user/error"
-	classProto "github.com/zchelalo/sa_class_management/pkg/proto/class"
+	"github.com/zchelalo/sa_class_management/pkg/proto"
 	"github.com/zchelalo/sa_class_management/pkg/util"
 	"google.golang.org/grpc/codes"
 )
 
-func (router *ClassRouter) CreateClass(ctx context.Context, req *classProto.CreateClassRequest) (*classProto.CreateClassResponse, error) {
+func (router *ClassRouter) CreateClass(ctx context.Context, req *proto.CreateClassRequest) (*proto.CreateClassResponse, error) {
 	classCreated, err := router.useCase.Create(ctx, &classApplication.CreateRequest{
 		UserID:  req.GetUserId(),
 		Name:    req.GetName(),
@@ -19,7 +19,7 @@ func (router *ClassRouter) CreateClass(ctx context.Context, req *classProto.Crea
 		Grade:   req.GetGrade(),
 	})
 	if err != nil {
-		errorToReturn := &classProto.ClassError{
+		errorToReturn := &proto.Error{
 			Code:    int32(codes.Internal),
 			Message: "Internal server error",
 		}
@@ -46,8 +46,8 @@ func (router *ClassRouter) CreateClass(ctx context.Context, req *classProto.Crea
 			errorToReturn.Message = err.Error()
 		}
 
-		classErrorResponse := &classProto.CreateClassResponse{
-			Result: &classProto.CreateClassResponse_Error{
+		classErrorResponse := &proto.CreateClassResponse{
+			Result: &proto.CreateClassResponse_Error{
 				Error: errorToReturn,
 			},
 		}
@@ -55,9 +55,9 @@ func (router *ClassRouter) CreateClass(ctx context.Context, req *classProto.Crea
 		return classErrorResponse, nil
 	}
 
-	response := &classProto.CreateClassResponse{
-		Result: &classProto.CreateClassResponse_Class{
-			Class: &classProto.ClassData{
+	response := &proto.CreateClassResponse{
+		Result: &proto.CreateClassResponse_Class{
+			Class: &proto.ClassData{
 				Id:      classCreated.ID,
 				Name:    classCreated.Name,
 				Subject: classCreated.Subject,
