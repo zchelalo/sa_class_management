@@ -8,8 +8,7 @@ import (
 	classGRPC "github.com/zchelalo/sa_class_management/internal/modules/class/infrastructure/adapters/grpc"
 	memberGRPC "github.com/zchelalo/sa_class_management/internal/modules/member/infrastructure/adapters/grpc"
 	"github.com/zchelalo/sa_class_management/pkg/bootstrap"
-	classProto "github.com/zchelalo/sa_class_management/pkg/proto/class"
-	memberProto "github.com/zchelalo/sa_class_management/pkg/proto/member"
+	"github.com/zchelalo/sa_class_management/pkg/proto"
 	"github.com/zchelalo/sa_class_management/pkg/sqlc/db"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -35,10 +34,10 @@ func Start() {
 	server := grpc.NewServer()
 
 	classRouter := classGRPC.New(store)
-	classProto.RegisterClassServiceServer(server, classRouter)
+	proto.RegisterClassServiceServer(server, classRouter)
 
 	memberRouter := memberGRPC.New(store)
-	memberProto.RegisterMemberServiceServer(server, memberRouter)
+	proto.RegisterMemberServiceServer(server, memberRouter)
 
 	reflection.Register(server)
 
