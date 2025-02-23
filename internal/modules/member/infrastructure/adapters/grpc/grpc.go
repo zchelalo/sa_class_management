@@ -1,22 +1,34 @@
 package memberGRPC
 
-// type MemberRouter struct {
-// 	useCase *memberApplication.MemberUseCases
-// 	memberProto.UnimplementedMemberServiceServer
-// }
+import (
+	classPostgresRepo "github.com/zchelalo/sa_class_management/internal/modules/class/infrastructure/repositories/postgres"
+	memberApplication "github.com/zchelalo/sa_class_management/internal/modules/member/application"
+	memberPostgresRepo "github.com/zchelalo/sa_class_management/internal/modules/member/infrastructure/repositories/postgres"
+	userGRPCRepo "github.com/zchelalo/sa_class_management/internal/modules/user/infrastructure/repositories/grpc"
+	"github.com/zchelalo/sa_class_management/pkg/bootstrap"
+	"github.com/zchelalo/sa_class_management/pkg/constants"
+	memberProto "github.com/zchelalo/sa_class_management/pkg/proto/member"
+	userProto "github.com/zchelalo/sa_class_management/pkg/proto/user"
+	"github.com/zchelalo/sa_class_management/pkg/sqlc/db"
+)
 
-// func New(store *db.SQLStore) *MemberRouter {
-// 	memberRepository := memberPostgresRepo.New(store)
+type MemberRouter struct {
+	useCase *memberApplication.MemberUseCases
+	memberProto.UnimplementedMemberServiceServer
+}
 
-// 	userClientConn := bootstrap.GetGRPCClient(constants.UserMicroserviceDomain)
-// 	userGRPCClient := userProto.NewUserServiceClient(userClientConn)
-// 	userRepository := userGRPCRepo.New(userGRPCClient)
+func New(store *db.SQLStore) *MemberRouter {
+	classRepository := classPostgresRepo.New(store)
 
-// 	memberRepository := memberPostgresRepo.New(store)
+	memberRepository := memberPostgresRepo.New(store)
 
-// 	memberUseCases := memberApplication.New(memberRepository, userRepository, memberRepository)
+	userClientConn := bootstrap.GetGRPCClient(constants.UserMicroserviceDomain)
+	userGRPCClient := userProto.NewUserServiceClient(userClientConn)
+	userRepository := userGRPCRepo.New(userGRPCClient)
 
-// 	return &MemberRouter{
-// 		useCase: memberUseCases,
-// 	}
-// }
+	memberUseCases := memberApplication.New(classRepository, userRepository, memberRepository)
+
+	return &MemberRouter{
+		useCase: memberUseCases,
+	}
+}

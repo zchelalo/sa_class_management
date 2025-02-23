@@ -18,7 +18,7 @@ type ListRequest struct {
 }
 
 type ListResponse struct {
-	Classes []*memberDomain.MemberEntity
+	Members []*memberDomain.MemberEntity
 	Meta    *meta.Meta
 }
 
@@ -71,8 +71,10 @@ func (useCases *MemberUseCases) List(ctx context.Context, listRequest *ListReque
 		return nil, err
 	}
 
+	// TODO: Implement a way to get the user data from the user service
+
 	return &ListResponse{
-		Classes: membersObtained,
+		Members: membersObtained,
 		Meta:    meta,
 	}, nil
 }

@@ -26,8 +26,8 @@ func (router *ClassRouter) GetClassCode(ctx context.Context, req *classProto.Get
 			userError.ErrIdRequired,
 			userError.ErrIdInvalid,
 
-			classError.ErrIDInvalid,
-			classError.ErrIDRequired,
+			classError.ErrIdInvalid,
+			classError.ErrIdRequired,
 		}
 
 		if util.IsErrorType(err, badRequestErrors) {

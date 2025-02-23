@@ -42,11 +42,11 @@ func New(name, subject, grade string) (*ClassEntity, error) {
 
 func IsIdValid(id string) error {
 	if id == "" {
-		return classError.ErrIDRequired
+		return classError.ErrIdInvalid
 	}
 
 	if _, err := uuid.Parse(id); err != nil {
-		return classError.ErrIDInvalid
+		return classError.ErrIdInvalid
 	}
 
 	return nil

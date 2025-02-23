@@ -27,18 +27,28 @@ sqlc:
 
 protouser:
 	protoc --experimental_allow_proto3_optional \
-	  --go_out=./pkg/proto --go_opt=paths=source_relative \
-	  --go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
-	  ./sa_proto/user/service.proto && \
-	mv ./pkg/proto/sa_proto/user/* ./pkg/proto/user/ && \
-	rm -rf ./pkg/proto/sa_proto
+		-I=sa_proto \
+		--go_out=./pkg/proto --go_opt=paths=source_relative \
+		--go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
+		sa_proto/user/service.proto
 
 protoclass:
 	protoc --experimental_allow_proto3_optional \
-	  --go_out=./pkg/proto --go_opt=paths=source_relative \
-	  --go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
-	  ./sa_proto/class/service.proto && \
-	mv ./pkg/proto/sa_proto/class/* ./pkg/proto/class/ && \
-	rm -rf ./pkg/proto/sa_proto
+		-I=sa_proto \
+		--go_out=./pkg/proto --go_opt=paths=source_relative \
+		--go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
+		sa_proto/class/service.proto
 
-.PHONY: migrateup migrateup1 migratedown migratedown1 compose composebuild sqlc protouser protoclass
+protomember:
+	protoc --experimental_allow_proto3_optional \
+		-I=sa_proto \
+		--go_out=./pkg/proto --go_opt=paths=source_relative \
+		--go-grpc_out=./pkg/proto --go-grpc_opt=paths=source_relative \
+		sa_proto/member/service.proto
+
+proto:
+	protouser
+	protoclass
+	protomember
+
+.PHONY: migrateup migrateup1 migratedown migratedown1 compose composebuild sqlc protouser protoclass protomember proto
